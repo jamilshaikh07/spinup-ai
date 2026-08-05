@@ -2,12 +2,11 @@ export const dynamic = "force-dynamic";
 
 import OpenAI from "openai";
 
-const client = new OpenAI({
-  baseURL: process.env.ROUTEPLANE_BASE_URL,
-  apiKey: process.env.ROUTEPLANE_API_KEY,
-});
-
 export async function POST(req: Request) {
+  const client = new OpenAI({
+    baseURL: process.env.ROUTEPLANE_BASE_URL,
+    apiKey: process.env.ROUTEPLANE_API_KEY,
+  });
   const { messages, model } = await req.json();
 
   const stream = await client.chat.completions.create({
