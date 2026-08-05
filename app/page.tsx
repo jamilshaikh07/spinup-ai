@@ -21,14 +21,14 @@ export default function Home() {
           href="/chat"
           className="px-4 py-2 bg-indigo-500 hover:bg-indigo-600 text-white text-sm rounded-lg transition-colors"
         >
-          Try free
+          Try now
         </Link>
       </nav>
 
       {/* Hero */}
       <section className="flex-1 flex flex-col items-center justify-center text-center px-6 py-24 gap-6">
         <div className="px-3 py-1 rounded-full border border-indigo-500/30 bg-indigo-500/10 text-indigo-400 text-xs font-medium">
-          Claude · GPT-4o · DeepSeek · Gemini — one place
+          Claude · GPT-4o · DeepSeek · Gemini - one place
         </div>
 
         <h1 className="text-4xl md:text-6xl font-bold text-white max-w-3xl leading-tight">
@@ -39,7 +39,7 @@ export default function Home() {
 
         <p className="text-slate-400 text-lg max-w-xl">
           Stop paying for 5 different AI subscriptions. Spinup AI gives you access to every major model
-          in a single clean interface — at a fraction of the cost.
+          in a single clean interface - at a fraction of the cost.
         </p>
 
         <div className="flex gap-3 flex-wrap justify-center">
@@ -47,10 +47,10 @@ export default function Home() {
             href="/chat"
             className="px-6 py-3 bg-indigo-500 hover:bg-indigo-600 text-white rounded-lg font-medium transition-colors"
           >
-            Start chatting free
+            Start chatting
           </Link>
           <a
-            href="mailto:jamilshaikh07@gmail.com"
+            href="mailto:hi@jamilshaikh.in"
             className="px-6 py-3 border border-white/10 hover:border-white/20 text-slate-300 rounded-lg font-medium transition-colors"
           >
             Get early access
@@ -87,7 +87,7 @@ export default function Home() {
       </section>
 
       <footer className="border-t border-white/5 px-6 py-4 text-center text-slate-500 text-xs">
-        Spinup AI · Built by Jamil Shaikh · <a href="mailto:jamilshaikh07@gmail.com" className="hover:text-slate-300">jamilshaikh07@gmail.com</a>
+        Spinup AI · <a href="mailto:hi@jamilshaikh.in" className="hover:text-slate-300">hi@jamilshaikh.in</a>
       </footer>
     </main>
   );

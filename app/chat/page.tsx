@@ -13,7 +13,67 @@ const MODELS = [
 
 type Message = { role: "user" | "assistant"; content: string };
 
+const ACCESS_KEY = "spinup_access";
+
+function AccessGate({ onUnlock }: { onUnlock: () => void }) {
+  const [code, setCode] = useState("");
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  async function submit(e: React.FormEvent) {
+    e.preventDefault();
+    setLoading(true);
+    setError("");
+    const res = await fetch("/api/auth", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ code }),
+    });
+    setLoading(false);
+    if (res.ok) {
+      localStorage.setItem(ACCESS_KEY, code);
+      onUnlock();
+    } else {
+      setError("Invalid access code.");
+    }
+  }
+
+  return (
+    <div className="flex flex-col h-screen items-center justify-center px-6">
+      <div className="w-full max-w-sm flex flex-col gap-6">
+        <div className="flex flex-col items-center gap-3 text-center">
+          <div className="w-12 h-12 rounded-2xl bg-indigo-500/20 flex items-center justify-center text-2xl">✦</div>
+          <h1 className="text-white font-semibold text-xl">Access required</h1>
+          <p className="text-slate-500 text-sm">Enter your access code to start chatting.</p>
+        </div>
+        <form onSubmit={submit} className="flex flex-col gap-3">
+          <input
+            type="text"
+            value={code}
+            onChange={(e) => setCode(e.target.value)}
+            placeholder="Access code"
+            autoFocus
+            className="bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white text-sm outline-none focus:border-indigo-500/60 placeholder-slate-600"
+          />
+          {error && <p className="text-red-400 text-xs">{error}</p>}
+          <button
+            type="submit"
+            disabled={!code.trim() || loading}
+            className="px-4 py-3 bg-indigo-500 hover:bg-indigo-600 disabled:opacity-40 text-white rounded-xl text-sm font-medium transition-colors"
+          >
+            {loading ? "Checking..." : "Continue"}
+          </button>
+        </form>
+        <p className="text-center text-slate-600 text-xs">
+          Need access? <a href="mailto:hi@jamilshaikh.in" className="text-slate-400 hover:text-slate-300">hi@jamilshaikh.in</a>
+        </p>
+      </div>
+    </div>
+  );
+}
+
 export default function ChatPage() {
+  const [unlocked, setUnlocked] = useState<boolean | null>(null);
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [model, setModel] = useState(MODELS[0].id);
@@ -22,8 +82,21 @@ export default function ChatPage() {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   useEffect(() => {
+    const stored = localStorage.getItem(ACCESS_KEY);
+    if (!stored) { setUnlocked(false); return; }
+    fetch("/api/auth", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ code: stored }),
+    }).then((r) => setUnlocked(r.ok)).catch(() => setUnlocked(false));
+  }, []);
+
+  useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
+
+  if (unlocked === null) return null;
+  if (!unlocked) return <AccessGate onUnlock={() => setUnlocked(true)} />;
 
   async function send() {
     const text = input.trim();
@@ -126,7 +199,7 @@ export default function ChatPage() {
                 "w-7 h-7 rounded-full shrink-0 flex items-center justify-center text-xs font-bold",
                 msg.role === "user" ? "bg-indigo-500 text-white" : "bg-white/10 text-slate-300"
               )}>
-                {msg.role === "user" ? "J" : "AI"}
+                {msg.role === "user" ? "U" : "AI"}
               </div>
               <div className={clsx(
                 "rounded-2xl px-4 py-3 text-sm max-w-[85%]",
