@@ -7,14 +7,14 @@ export async function POST(req: Request) {
     baseURL: process.env.ROUTEPLANE_BASE_URL,
     apiKey: process.env.ROUTEPLANE_API_KEY,
   });
-  const { messages, model } = await req.json();
+  const { messages, model = "claude-sonnet-4-5" } = await req.json();
 
-  const stream = await client.chat.completions.create({
-    model: model ?? "claude-sonnet-4-5",
-    messages,
-    stream: true,
-    max_tokens: 4096,
-  });
+  const providerHeader = model.startsWith("claude-") ? { "x-routeplane-provider": "anthropic" } : {};
+
+  const stream = await client.chat.completions.create(
+    { model, messages, stream: true, max_tokens: 4096 },
+    { headers: providerHeader },
+  );
 
   const encoder = new TextEncoder();
   const readable = new ReadableStream({
